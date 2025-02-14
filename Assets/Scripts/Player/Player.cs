@@ -7,6 +7,7 @@ public class Player : MonoBehaviour
     public static Player Instance { get; private set; }
 
     [SerializeField] private float movingSpeed = 10f;
+    Vector2 inputVector;
 
     
 
@@ -19,6 +20,21 @@ public class Player : MonoBehaviour
     {
         Instance = this;
         rb = GetComponent<Rigidbody2D>();
+    }
+
+    private void Start()
+    {
+        GameInput.Instance.OnPlayerAttack += Player_OnPlayerAttack;
+    }
+
+    private void Player_OnPlayerAttack(object sender,System.EventArgs e)
+    {
+        ActiveWeapon.Instance.GetActiveWeapon().Attack();
+    }
+
+    private void Update()
+    {
+        inputVector = GameInput.Instance.GetMovementVector();
     }
 
     
@@ -34,7 +50,9 @@ public class Player : MonoBehaviour
     {
         Vector2 inputVector = GameInput.Instance.GetMovementVector();
 
-        inputVector = inputVector.normalized;
+        //inputVector = inputVector.normalized;
+
+        Debug.Log(inputVector);
 
         rb.MovePosition(rb.position + inputVector * (movingSpeed * Time.fixedDeltaTime));
 
